@@ -1,3 +1,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.operator {
+  @apply bg-accent  cursor-pointer hover:bg-accent3 px-1 py-4 rounded-lg text-center text-fg leading-[1.75rem] font-inter font-bold;
+}
+
+.number {
+  @apply bg-primary cursor-pointer hover:bg-accent px-1 py-4 rounded-lg text-center text-fg font-inter;
+}
