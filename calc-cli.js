@@ -20,7 +20,7 @@ process.stdin.on("data", function (data) {
     process.stdin.emit("end");
   }
   // remove spaces and trailing newlines
-  calculation = calculation.split(/\s+/);
+  calculation = mergeDecimals(calculation);
   calculation = cleanup(calculation);
   calculation = filterOperations(calculation);
   calculation = bodmas(calculation);
@@ -30,6 +30,26 @@ process.stdin.on("data", function (data) {
 process.stdin.on("end", function () {
   console.log("Good Bye !!! :)");
 });
+
+/**
+ * mergeDecimals - merges all number and decimal groups into potential floating points
+ * @param {String} ipt - calculation string 
+ * @returns list representation of calculation string with merged decimals
+ */
+function mergeDecimals(ipt) {
+  ipt = ipt.split('')
+  let size = ipt.length;
+  let i = 0;
+  
+  while (i < size) {
+    if (ipt[i] === '.' && ipt[i - 1] && ipt[i + 1]) {
+      ipt.splice(i - 1, 3, `${ipt[i - 1]}.${ipt[i + 1]}`)
+      size--;
+    }
+    i++;
+  }
+  return ipt;
+}
 
 /*
  * cleanup - cleans up equation by converting the strings to ints and floats and
