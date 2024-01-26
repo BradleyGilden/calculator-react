@@ -53,14 +53,8 @@ const CalcBody = ({ displayRef, screenRef }) => {
         // if there is a valid number besides 0 then append new numbers to the displays
       } else if ((!isNaN(event.target.dataset.value) || (event.target.id === 'decimal'
         && !displayContent.includes('.'))) && displayContent !== '0' && !opUsed && !eqUsed) {
-        displayContent = [displayContent, event.target.dataset.value];
-        displayContent = displayContent.join('');
-      
-        screenContent = [screenContent, event.target.dataset.value];
-        screenContent = screenContent.join('');
-
-        displayRef.current.textContent = displayContent;
-        screenRef.current.textContent = screenContent;
+        displayRef.current.textContent = displayContent + event.target.dataset.value;
+        screenRef.current.textContent = screenContent + event.target.dataset.value;
         eqUsed = false;
         // if 0 is present replace it with a valid number
       } else if (!isNaN(event.target.dataset.value)) {
@@ -68,7 +62,7 @@ const CalcBody = ({ displayRef, screenRef }) => {
         if (!opUsed) {
           screenRef.current.textContent = event.target.dataset.value;
         } else {
-          screenRef.current.textContent = [screenContent, event.target.dataset.value].join('')
+          screenRef.current.textContent = screenContent + event.target.dataset.value
         }
         opUsed = false;
         eqUsed = false;
@@ -76,9 +70,7 @@ const CalcBody = ({ displayRef, screenRef }) => {
       } else if (operators.includes(event.target.dataset.value) && screenContent.slice(-1) !== event.target.dataset.value &&
         !(operators.includes(screenContent.slice(-1)) && operators.includes(screenContent.slice(-2, -1)))) {
         if ((operators.includes(screenContent.slice(-1)) && event.target.dataset.value === '-') || !isNaN(screenContent.slice(-1))) {
-          screenContent = [screenContent, event.target.dataset.value];
-          screenContent = screenContent.join('');
-          screenRef.current.textContent = screenContent;
+          screenRef.current.textContent = screenContent + event.target.dataset.value;
         } else {
           screenContent = screenContent.split('')
           screenContent.splice(-1, 1, event.target.dataset.value)
