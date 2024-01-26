@@ -1,35 +1,12 @@
-#!/usr/bin/node
 
-/**
- * calc-cli - The cli based version of the web calculator in nodejs
- * 
- * Author: Bradley Dillion Gilden
- * Date: 25-01-2024
- */
-
-process.stdin.setEncoding("utf8");
-
-console.log("Please enter calculation (press Ctrl+D or enter EOF to end):");
-
-// continuosly read input from stdin
-process.stdin.on("data", function (data) {
-  // remove white spaces and newlines at the ends
-  let calculation = data.trim();
-
-  if (calculation === "exit" || calculation === "EOF") {
-    process.stdin.emit("end");
-  }
+export default function calcMath(inpt) {
   // remove spaces and trailing newlines
-  calculation = mergeDecimals(calculation);
+  let calculation = mergeDecimals(inpt);
   calculation = cleanup(calculation);
   calculation = filterOperations(calculation);
   calculation = bodmas(calculation);
-  console.log(calculation);
-});
-
-process.stdin.on("end", function () {
-  console.log("Good Bye !!! :)");
-});
+  return calculation;
+}
 
 /**
  * mergeDecimals - merges all number and decimal groups into potential floating points
@@ -100,6 +77,7 @@ function cleanup(calculation) {
     console.log(err.message);
     calc = [];
   } finally {
+    // eslint-disable-next-line no-unsafe-finally
     return calc;
   }
 }

@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 
 import './App.css'
+import calcMath from './calcmath'
 import { useRef } from 'react'
 
 function App() {
@@ -30,7 +31,9 @@ const Screens = ({ displayRef, screenRef }) => {
 }
 
 const CalcBody = ({ displayRef, screenRef }) => {
-  const buttonRef = useRef(null)
+  const buttonRef = useRef(null);
+  let opUsed = false;
+  let eqUsed = false;
   const operators = ["/", "*", "+", "-"];
 
   const handleClickEvents = (event) => {
@@ -49,7 +52,7 @@ const CalcBody = ({ displayRef, screenRef }) => {
         screenRef.current.textContent = '0'
         // if there is a valid number besides 0 then append new numbers to the displays
       } else if ((!isNaN(event.target.dataset.value) || (event.target.id === 'decimal'
-        && !displayContent.includes('.'))) && displayContent !== '0') {
+        && !displayContent.includes('.'))) && displayContent !== '0' && !opUsed && !eqUsed) {
         displayContent = [displayContent, event.target.dataset.value];
         displayContent = displayContent.join('');
       
@@ -58,10 +61,17 @@ const CalcBody = ({ displayRef, screenRef }) => {
 
         displayRef.current.textContent = displayContent;
         screenRef.current.textContent = screenContent;
+        eqUsed = false;
         // if 0 is present replace it with a valid number
       } else if (!isNaN(event.target.dataset.value)) {
         displayRef.current.textContent = event.target.dataset.value;
-        screenRef.current.textContent = event.target.dataset.value;
+        if (!opUsed) {
+          screenRef.current.textContent = event.target.dataset.value;
+        } else {
+          screenRef.current.textContent = [screenContent, event.target.dataset.value].join('')
+        }
+        opUsed = false;
+        eqUsed = false;
         // prevents repeated operators, while only allowing - as a second optional operator
       } else if (operators.includes(event.target.dataset.value) && screenContent.slice(-1) !== event.target.dataset.value &&
         !(operators.includes(screenContent.slice(-1)) && operators.includes(screenContent.slice(-2, -1)))) {
@@ -75,11 +85,20 @@ const CalcBody = ({ displayRef, screenRef }) => {
           screenContent = screenContent.join('')
           screenRef.current.textContent = screenContent;
         }
+        opUsed = true;
+        eqUsed = false;
+        // this ensures the maximum of 2 operators are replaced by a new operator when you have a non-negative operator and negative operator combination
       } else if (operators.includes(event.target.dataset.value) && screenContent.slice(-1) === '-' && operators.includes(screenContent.slice(-2, -1))) {
-        screenContent = screenContent.split('')
-        screenContent.splice(-2, 2, event.target.dataset.value)
-        screenContent = screenContent.join('')
+        screenContent = screenContent.split('');
+        screenContent.splice(-2, 2, event.target.dataset.value);
+        screenContent = screenContent.join('');
         screenRef.current.textContent = screenContent;
+        opUsed = true;
+      } else if (event.target.id === 'equals') {
+        let result = String(calcMath(screenRef.current.textContent));
+        screenRef.current.textContent = result;
+        displayRef.current.textContent = result;
+        eqUsed = true;
       }
     }
   }
