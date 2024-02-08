@@ -19,8 +19,10 @@ process.stdin.on("data", function (data) {
   if (calculation === "exit" || calculation === "EOF") {
     process.stdin.emit("end");
   }
+  pattern = /\s+/
   // remove spaces and trailing newlines
   calculation = mergeDecimals(calculation);
+  calculation = calculation.filter((item) => !pattern.test(item))
   calculation = cleanup(calculation);
   calculation = filterOperations(calculation);
   calculation = bodmas(calculation);
