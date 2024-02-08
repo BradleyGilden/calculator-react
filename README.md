@@ -1,7 +1,7 @@
 # Calculator
 
 A simple calculator created with Reactjs<br>
-To view application visit [coma-calc.vercel.app](https://coma-calc.vercel.app/)
+To view application visit [calc-r.vercel.app/](https://calc-r.vercel.app/)
 
 ## Tools
 
